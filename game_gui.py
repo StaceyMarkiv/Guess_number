@@ -1,4 +1,8 @@
+import random
 from tkinter import *
+from single_player import guess_single, try_count
+
+number = random.randint(1, 100)
 
 
 class Main(Frame):
@@ -7,10 +11,21 @@ class Main(Frame):
         self.build()
 
     def build(self):
-        self.formula = "0"
-        self.lbl = Label(text=self.formula, font=("Times New Roman", 21, "bold"),
-                         bg="#000", foreground="#FFF")
-        self.lbl.place(x=11, y=50)
+        # Нужно привязать счетчик к кнопке "Ввод"
+        # self.counts = "Попытка № 1"
+        # self.lbl_counts = Label(text=self.counts, font=("Times New Roman", 16, "bold"),
+        #                         bg="#000", foreground="#FFF")
+        # self.lbl_counts.place(x=11, y=20)
+
+        self.result = "Введите число:"
+        self.lbl_result = Label(text=self.result, font=("Times New Roman", 16, "bold"),
+                                bg="#000", foreground="#FFF")
+        self.lbl_result.place(x=11, y=60)
+
+        self.action = "0"
+        self.lbl_number = Label(text=self.action, font=("Times New Roman", 21, "bold"),
+                                bg="#000", foreground="#FFF")
+        self.lbl_number.place(x=11, y=100)
 
         btns = [
             "1", "2", "3",
@@ -19,39 +34,45 @@ class Main(Frame):
             "Сброс", "0", "Стереть цифру"
         ]
         x = 10
-        y = 180
+        y = 170
         for bt in btns:
-            com = lambda x=bt: self.logicalc(x)
-            Button(text=bt, bg="#FFF",
-                   font=("Times New Roman", 15),
-                   command=com).place(x=x, y=y,
-                                      width=150,
-                                      height=80)
+            com = lambda x=bt: self.button_logic(x)
+            Button(text=bt, bg="#FFF", font=("Times New Roman", 15),
+                   command=com).place(x=x, y=y, width=150, height=65)
             x += 160
             if x > 400:
                 x = 10
-                y += 90
+                y += 75
 
-    def logicalc(self, operation):
+        Button(text="Ввод", bg="#FFF", font=("Times New Roman", 15),
+               command=lambda x="Ввод": self.button_logic(x)).place(x=10, y=470, width=470, height=65)
+
+    def button_logic(self, operation):
         if operation == "Сброс":
-            self.formula = ""
+            self.action = ""
         elif operation == "Стереть цифру":
-            self.formula = self.formula[0:-1]
+            self.action = self.action[0:-1]
+        elif operation == "Ввод":
+            self.result = guess_single(self.action, number)
+            # self.counts = try_count(count)
+            # self.lbl_counts.configure(text=self.counts)
+            self.lbl_result.configure(text=self.result)
+            self.action = "0"
         else:
-            if self.formula == "0":
-                self.formula = ""
-            self.formula += operation
+            if self.action == "0":
+                self.action = ""
+            self.action += operation
         self.update()
 
     def update(self):
-        if self.formula == "":
-            self.formula = "0"
-        self.lbl.configure(text=self.formula)
+        if self.action == "":
+            self.action = "0"
+        self.lbl_number.configure(text=self.action)
 
 
 root = Tk()
 root["bg"] = "#000"
-root.geometry("485x550+200+200")
+root.geometry("490x550+200+200")
 root.title("Угадай число")
 root.resizable(False, False)
 app = Main(root)
